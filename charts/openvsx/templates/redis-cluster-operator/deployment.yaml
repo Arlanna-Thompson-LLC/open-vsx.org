@@ -23,7 +23,7 @@ spec:
       serviceAccountName: {{ .Values.redis.serviceAccountName }}
       containers:
       - name: redis-cluster-operator-{{ .Values.environment }}
-        image: "ghcr.io/eclipsefdn/redis-cluster-operator"
+        image: "ghcr.io/eclipsefdn/redis-cluster-operator:latest@sha256:dc9ff5aa2cb659bd05878f80c83f87a0e7eafa8090d153c6f10562c35a6070dd"
         imagePullPolicy: Always
         env:
         - name: NAMESPACE
