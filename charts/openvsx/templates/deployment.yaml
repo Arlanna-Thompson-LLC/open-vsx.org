@@ -22,6 +22,8 @@ spec:
         environment: {{ .Values.environment }}
         type: website
     spec:
+      securityContext:
+        runAsNonRoot: true
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
