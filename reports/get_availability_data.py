@@ -9,19 +9,42 @@ import numpy as np
 import os
 import calendar
 import time
-from urllib.parse import urlparse
+import re
+from urllib.parse import urlparse, urlunparse
 
 API_URL = 'https://betteruptime.com/api/v2'
 TOKEN = os.getenv('TOKEN')
 HEADERS = {'Authorization': 'Bearer %s' % TOKEN}
 
+def build_validated_url(base_url: str) -> str:
+    try:
+        # Minimal path validation
+        if "/../" in base_url or re.search(r"/%2e%2e/", base_url, re.IGNORECASE):
+            raise ValueError("Invalid path")
+        
+        parsed = urlparse(base_url)
+        
+        # Protocol + host checks
+        if parsed.scheme not in ("http", "https"):
+            raise ValueError("Invalid protocol")
+        if not parsed.hostname:
+            raise ValueError("Invalid host")
+        allowed_domains = ["betteruptime.com"]
+        if parsed.hostname.lower() not in allowed_domains:
+            raise ValueError("Invalid host")
+        
+        return urlunparse(parsed)
+    except Exception:
+        raise ValueError("Invalid URL")
+
 def make_api_call(url):
     # print("Calling %s" % url)
+    validated_url = build_validated_url(url)
     retry_count = 5
     done = False
     while not done:
         try:
-            response = requests.get(url, headers=HEADERS)
+            response = requests.get(validated_url, headers=HEADERS)
             response.raise_for_status()
             done = True
         except requests.exceptions.RequestException as e:
