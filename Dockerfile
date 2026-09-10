@@ -13,7 +13,10 @@ RUN apt-get update \
     ca-certificates \
     curl \
   && rm -rf /var/lib/apt/lists/* \
-  && curl -sSL https://deb.nodesource.com/setup_20.x | bash - \
+  && curl -sSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh \
+  && echo "2c4c6683a17b6f4128898a7b521e3c8bb725a99ffaf1b5e32ac97c6fa7d381be  /tmp/nodesource_setup.sh" | sha256sum -c - \
+  && bash /tmp/nodesource_setup.sh \
+  && rm /tmp/nodesource_setup.sh \
   && apt-get install -y nodejs \
   && apt-get clean \
   && corepack enable \
