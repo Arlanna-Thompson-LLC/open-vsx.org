@@ -38,3 +38,6 @@ COPY --from=builder --chown=openvsx:openvsx /workdir/mail-templates BOOT-INF/cla
 
 # Replace version placeholder with arg value
 RUN sed -i "s/<SERVER_VERSION>/${SERVER_VERSION_STRING}/g" config/application.yml
+
+RUN chown -R 1000:1000 /app
+USER 1000
